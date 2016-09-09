@@ -1,0 +1,71 @@
+@import 'scss/components/input';
+@import 'scss/components/label';
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+body, html {
+  font-size: 14px;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+input:focus {
+  outline: none;
+}
+
+*, *:before, *:after {
+  position: relative;
+  box-sizing: border-box;
+}
+
+button, .ui-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: transparent;
+  border: none;
+  background: #367DFF;
+  line-height: 1;
+  padding: 1rem 2rem;
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.ui-form-builder {
+  padding: 2rem;
+}
+
+.ui-row {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  border: 1px solid transparent;
+
+  &:hover {
+    border: 1px solid rgba(blue, 0.5);
+  }
+
+  &.-active {
+    border: 1px solid blue;
+  }
+
+  > .ui-field {
+    padding: 1rem;
+    flex: 1 0;
+  }
+
+  > .ui-editor {
+    padding: 1rem;
+    flex: 0 1;
+    background: #EFEFEF;
+  }
+}
