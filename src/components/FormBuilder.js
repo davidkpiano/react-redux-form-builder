@@ -18,16 +18,16 @@ const controlMap = {
   textarea: <textarea />,
 };
 
+const createControl = () => ({
+  value: '',
+});
+
 const createField = () => ({
   id: uniqueId(),
   type: 'text',
   model: 'user.name',
   label: '',
-  controls: [],
-});
-
-const createControl = () => ({
-  value: '',
+  controls: [createControl()],
 });
 
 class FormBuilder extends React.Component {
@@ -57,6 +57,14 @@ class FormBuilder extends React.Component {
                   className="ui-input -implicit"
                   placeholder={`Option ${i + 1}`}
                 />
+                <label className="ui-label -inline">
+                  <strong>value: </strong>
+                  <Control.text
+                    model={track(`form.fields[].controls[${i}].value`, {id: field.id})}
+                    className="ui-input -implicit"
+                    placeholder={`(value)`}
+                  />
+                </label>
               </div>
             )}
             <div
@@ -71,12 +79,35 @@ class FormBuilder extends React.Component {
         );
       case 'text':
       default:
+        const control = field.controls[0];
+
         return (
-          <Field model={field.model}>
-            <input type="text" className="ui-input" placeholder="Add Default Value" />
-          </Field>
+          <div className="ui-field">
+            <Control.text className="ui-input" placeholder="Default Value"
+              model={track('form.fields[].defaultValue', {id: field.id})}/>
+          </div>
         );
     }
+  }
+  renderCode() {
+    const { form } = this.props;
+    const t = '  ';
+
+    const codeControls = (field) => field.controls.map((control) => `
+<input type="${field.type}" defaultValue="${control.value}" />
+    `).join('\n');
+
+    const codeFields = (fields) => fields.map((field) => `
+<Field model="${field.model}" defaultValue="${field.defaultValue}">
+${t}${field.label ? `<label>${field.label}</label>` : ''}
+${codeControls(field).replace(/\n/g, '\n  ')}
+</Field>`).join('\n');
+
+    return `
+<Form model="${form.model}">
+${codeFields(form.fields).replace(/\n/g, '\n  ')}
+</Form>
+    `.trim().replace(/^\n+|\n+$/g, '');
   }
   render() {
     const { form: { fields, currentField }, dispatch } = this.props;
@@ -86,50 +117,55 @@ class FormBuilder extends React.Component {
       : null;
 
     return (
-      <Form model="form" className="ui-form-builder">
-        {fields.map((field) =>
-          <div
-            className={cn('ui-row', {'-active': field.id === currentField})}
-            onClick={() => dispatch(actions.change('form.currentField', field.id))}
-            key={field.id}
-          >
+      <section className="ui-form-builder">
+        <Form model="form" className="ui-form">
+          {fields.map((field) =>
             <div
-              className="ui-field"
+              className={cn('ui-row', {'-active': field.id === currentField})}
+              onClick={() => dispatch(actions.change('form.currentField', field.id))}
+              key={field.id}
             >
-              <Control.text
-                model={track('form.fields[].label', {id: field.id})}
-                placeholder="Add Label"
-                className="ui-input -implicit"
-              />
-              {(() => this.renderField(field))()}
-            </div>
-            <div className="ui-editor">
-              <Field model={track('form.fields[].model', {id: field.id})}>
-                <label>Model:</label>
-                <input
-                  className="ui-input"
-                  type="text"
-                  defaultValue="test"
+              <div
+                className="ui-field"
+              >
+                <Control.text
+                  model={track('form.fields[].label', {id: field.id})}
+                  placeholder="Add Label"
+                  className="ui-input -implicit"
                 />
-              </Field>
-              <Field model={track('form.fields[].type', {id: field.id})}>
-                <label>Type:</label>
-                <select>
-                  <option value="text">Text</option>
-                  <option value="textarea">Textarea</option>
-                  <option value="radio">radio</option>
-                </select>
-              </Field>
+                {(() => this.renderField(field))()}
+              </div>
+              <div className="ui-editor">
+                <Field model={track('form.fields[].model', {id: field.id})}>
+                  <label>Model:</label>
+                  <input
+                    className="ui-input"
+                    type="text"
+                    defaultValue="test"
+                  />
+                </Field>
+                <Field model={track('form.fields[].type', {id: field.id})}>
+                  <label>Type:</label>
+                  <select>
+                    <option value="text">Text</option>
+                    <option value="textarea">Textarea</option>
+                    <option value="radio">radio</option>
+                  </select>
+                </Field>
+              </div>
             </div>
-          </div>
-        )}
-        <button
-          type="button"
-          onClick={() => this.handleAddField()}
-        >
-          Add Field
-        </button>
-      </Form>
+          )}
+          <button
+            type="button"
+            onClick={() => this.handleAddField()}
+          >
+            Add Field
+          </button>
+        </Form>
+        <pre className="ui-code">
+        {this.renderCode()}
+        </pre>
+      </section>
     )
   }
 }

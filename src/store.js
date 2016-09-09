@@ -7,18 +7,22 @@ import createLogger from 'redux-logger';
 import { combineForms } from 'react-redux-form';
 import uniqueId from 'lodash/uniqueId';
 
+const createControl = () => ({
+  value: '',
+});
+
 const createField = () => ({
   id: uniqueId(),
   type: 'radio',
   model: 'user.name',
   label: '',
-  controls: [],
+  controls: [createControl()],
 });
 
 const initialField = createField();
 
 const initialFormState = {
-  model: '',
+  model: 'user',
   fields: [initialField],
   currentField: initialField.id,
 };
