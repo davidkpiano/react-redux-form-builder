@@ -41,7 +41,8 @@ button, .ui-button {
 }
 
 .ui-form-builder {
-  padding: 2rem;
+  display: flex;
+  flex-direction: row;
 }
 
 .ui-row {
