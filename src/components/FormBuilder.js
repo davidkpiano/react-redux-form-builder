@@ -45,12 +45,48 @@ class FormBuilder extends React.Component {
     switch (field.type) {
       case 'radio':
         return (
+          <Form model={track(`form.fields[]`, {id: field.id})} className="ui-field">
+            {field.controls.map((control, i) =>
+              <div className="ui-toggle" key={i}>
+                <Control.radio
+                  model=".defaultValue"
+                  value={control.value}
+                  tabIndex={-1}
+                />
+                <Control.text
+                  model={`.controls[${i}].label`}
+                  className="ui-input -implicit"
+                  placeholder={`Option ${i + 1}`}
+                />
+                <label className="ui-label -inline">
+                  <strong>value: </strong>
+                  <Control.text
+                    model={`.controls[${i}].value`}
+                    className="ui-input -implicit"
+                    placeholder={`(value)`}
+                  />
+                </label>
+              </div>
+            )}
+            <div
+              className="ui-toggle -button"
+              onClick={() =>
+                dispatch(actions.push(track(
+                  `form.fields[].controls`, {id: field.id}), createControl()))}>
+              <input type="radio"/>
+              <strong>Add Radio Button</strong>
+            </div>
+          </Form>
+        );
+      case 'checkbox':
+        return (
           <div className="ui-field">
             {field.controls.map((control, i) =>
-              <div className="ui-toggle">
-                <Control.radio
+              <div className="ui-toggle" key={i}>
+                <Control.checkbox
                   model={track(`form.fields[].defaultValue`, {id: field.id})}
                   value={control.value}
+                  tabIndex={-1}
                 />
                 <Control.text
                   model={track(`form.fields[].controls[${i}].label`, {id: field.id})}
@@ -72,7 +108,7 @@ class FormBuilder extends React.Component {
               onClick={() =>
                 dispatch(actions.push(track(
                   `form.fields[].controls`,{id: field.id}), createControl()))}>
-              <input type="radio"/>
+              <input type="checkbox"/>
               <strong>Add Radio Button</strong>
             </div>
           </div>
@@ -150,6 +186,7 @@ ${codeFields(form.fields).replace(/\n/g, '\n  ')}
                     <option value="text">Text</option>
                     <option value="textarea">Textarea</option>
                     <option value="radio">radio</option>
+                    <option value="checkbox">checkbox</option>
                   </select>
                 </Field>
               </div>
