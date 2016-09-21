@@ -1,0 +1,26 @@
+.ui-editor {
+  background: #333333;
+  padding: 1rem;
+  pointer-events: none;
+  opacity: 0;
+
+  &.-active {
+    pointer-events: auto;
+    animation: editor-enter 0.3s ease-in-out both;
+  }
+
+  .ui-label {
+    color: white;
+  }
+}
+
+@keyframes editor-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

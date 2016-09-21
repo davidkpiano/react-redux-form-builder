@@ -11,6 +11,10 @@ import uniqueId from 'lodash/uniqueId';
 import get from 'lodash/get';
 import cn from 'classnames';
 
+import {PrismCode} from "react-prism";
+import EditField from './EditField';
+import snippet from './Snippet';
+
 window.track = track;
 
 const controlMap = {
@@ -58,14 +62,11 @@ class FormBuilder extends React.Component {
                   className="ui-input -implicit"
                   placeholder={`Option ${i + 1}`}
                 />
-                <label className="ui-label -inline">
-                  <strong>value: </strong>
-                  <Control.text
-                    model={`.controls[${i}].value`}
-                    className="ui-input -implicit"
-                    placeholder={`(value)`}
-                  />
-                </label>
+                <Control.text
+                  model={`.controls[${i}].value`}
+                  className="ui-input -implicit"
+                  placeholder={`(value)`}
+                />
               </div>
             )}
             <div
@@ -93,14 +94,11 @@ class FormBuilder extends React.Component {
                   className="ui-input -implicit"
                   placeholder={`Option ${i + 1}`}
                 />
-                <label className="ui-label -inline">
-                  <strong>value: </strong>
-                  <Control.text
-                    model={track(`form.fields[].controls[${i}].value`, {id: field.id})}
-                    className="ui-input -implicit"
-                    placeholder={`(value)`}
-                  />
-                </label>
+                <Control.text
+                  model={track(`form.fields[].controls[${i}].value`, {id: field.id})}
+                  className="ui-input -implicit"
+                  placeholder={`(value)`}
+                />
               </div>
             )}
             <div
@@ -125,28 +123,8 @@ class FormBuilder extends React.Component {
         );
     }
   }
-  renderCode() {
-    const { form } = this.props;
-    const t = '  ';
-
-    const codeControls = (field) => field.controls.map((control) => `
-<input type="${field.type}" defaultValue="${control.value}" />
-    `).join('\n');
-
-    const codeFields = (fields) => fields.map((field) => `
-<Field model="${field.model}" defaultValue="${field.defaultValue}">
-${t}${field.label ? `<label>${field.label}</label>` : ''}
-${codeControls(field).replace(/\n/g, '\n  ')}
-</Field>`).join('\n');
-
-    return `
-<Form model="${form.model}">
-${codeFields(form.fields).replace(/\n/g, '\n  ')}
-</Form>
-    `.trim().replace(/^\n+|\n+$/g, '');
-  }
   render() {
-    const { form: { fields, currentField }, dispatch } = this.props;
+    const { form, form: { fields, currentField }, dispatch } = this.props;
 
     const editingField = currentField
       ? fields.filter((field) => field.id === currentField)[0]
@@ -154,7 +132,19 @@ ${codeFields(form.fields).replace(/\n/g, '\n  ')}
 
     return (
       <section className="ui-form-builder">
-        <Form model="form" className="ui-form">
+        <div model="form" className="ui-form">
+          <div className="ui-row">
+            <div className="ui-field">
+              <div className="ui-input -implicit -large">
+                <span className="ui-subtext">Form for{'\u00a0'}</span>
+                <Control.text
+                  model="form.model"
+                  placeholder="(Form model)"
+                  className="ui-input -inner"
+                />
+              </div>
+            </div>
+          </div>
           {fields.map((field) =>
             <div
               className={cn('ui-row', {'-active': field.id === currentField})}
@@ -171,25 +161,7 @@ ${codeFields(form.fields).replace(/\n/g, '\n  ')}
                 />
                 {(() => this.renderField(field))()}
               </div>
-              <div className="ui-editor">
-                <Field model={track('form.fields[].model', {id: field.id})}>
-                  <label>Model:</label>
-                  <input
-                    className="ui-input"
-                    type="text"
-                    defaultValue="test"
-                  />
-                </Field>
-                <Field model={track('form.fields[].type', {id: field.id})}>
-                  <label>Type:</label>
-                  <select>
-                    <option value="text">Text</option>
-                    <option value="textarea">Textarea</option>
-                    <option value="radio">radio</option>
-                    <option value="checkbox">checkbox</option>
-                  </select>
-                </Field>
-              </div>
+              <EditField field={field} form={form} />
             </div>
           )}
           <button
@@ -198,10 +170,16 @@ ${codeFields(form.fields).replace(/\n/g, '\n  ')}
           >
             Add Field
           </button>
-        </Form>
-        <pre className="ui-code">
-        {this.renderCode()}
-        </pre>
+        </div>
+        <div className="ui-code">
+          <pre>          
+            <PrismCode className="language-jsx">
+              {snippet('form', form, fields.map((field) =>
+                snippet('field', field))
+              )}
+            </PrismCode>
+          </pre>
+        </div>
       </section>
     )
   }

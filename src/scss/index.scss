@@ -1,5 +1,8 @@
-@import 'scss/components/input';
-@import 'scss/components/label';
+@import 'components/input';
+@import 'components/label';
+@import 'components/editor';
+@import 'components/text';
+@import 'vendor/prism';
 
 body {
   margin: 0;
@@ -7,7 +10,7 @@ body {
   font-family: sans-serif;
 }
 
-body, html {
+body, html, #root {
   font-size: 14px;
   height: 100%;
   width: 100%;
@@ -43,6 +46,30 @@ button, .ui-button {
 .ui-form-builder {
   display: flex;
   flex-direction: row;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+
+  > .ui-form {
+    flex: 1 0 60%;
+  }
+  > .ui-code {
+    flex: 1 1 40%;
+  }
+}
+
+.ui-form {
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.ui-code {
+  background: #272822;
+  color: white;
+  width: 100%;
+  margin: 0;
+  padding: 1rem;
+  font-size: 0.8rem;
 }
 
 .ui-row {
@@ -57,6 +84,7 @@ button, .ui-button {
 
   &.-active {
     border: 1px solid blue;
+    z-index: 100;
   }
 
   > .ui-field {
@@ -65,8 +93,16 @@ button, .ui-button {
   }
 
   > .ui-editor {
-    padding: 1rem;
-    flex: 0 1;
-    background: #EFEFEF;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 50%;
   }
+}
+
+.ui-tab-link {
+  display: inline-block;
+  padding: 1rem;
+  text-transform: uppercase;
+  font-size: 0.8rem;
 }

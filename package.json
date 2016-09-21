@@ -58,9 +58,12 @@
   },
   "dependencies": {
     "react": "15.3.1",
+    "react-addons-pure-render-mixin": "~15.3.2",
     "react-dom": "15.3.1",
+    "react-prism": "~3.2.2",
     "react-redux": "/Users/davidk4.4.5",
     "react-redux-form": "/Users/davidk1.0.0-beta.9",
+    "react-tabs": "~0.8.0",
     "redux": "/Users/davidk3.6.0",
     "redux-thunk": "/Users/davidk2.1.0"
   },
