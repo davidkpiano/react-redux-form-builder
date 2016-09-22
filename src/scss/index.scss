@@ -1,7 +1,23 @@
+$color-border: #DEDEDE;
+$color-primary: #278EEB;
+$color-primary-dark: #283E51;
+
+@mixin transition($props) {
+  $value: ();
+
+  @each $prop in $props {
+    $value: append($value, unquote('#{$prop} 0.3s ease-in-out'), comma);
+  }
+
+  transition: $value;
+}
+
 @import 'components/input';
 @import 'components/label';
 @import 'components/editor';
 @import 'components/text';
+@import 'components/button';
+@import 'components/field';
 @import 'vendor/prism';
 
 body {
@@ -27,21 +43,7 @@ input:focus {
   box-sizing: border-box;
 }
 
-button, .ui-button {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background: transparent;
-  border: none;
-  background: #367DFF;
-  line-height: 1;
-  padding: 1rem 2rem;
-  color: white;
-  font-weight: bold;
-  font-size: 1rem;
-  border-radius: 2px;
-  cursor: pointer;
-}
+
 
 .ui-form-builder {
   display: flex;
@@ -51,10 +53,11 @@ button, .ui-button {
   overflow: hidden;
 
   > .ui-form {
-    flex: 1 0 60%;
+    flex: 1 0 70%;
   }
+
   > .ui-code {
-    flex: 1 1 40%;
+    flex: 1 1 30%;
   }
 }
 
@@ -73,30 +76,37 @@ button, .ui-button {
 }
 
 .ui-row {
+  @include transition(transform border);
   display: flex;
   flex-direction: row;
   align-items: stretch;
   border: 1px solid transparent;
+  margin-bottom: 1rem;
+  border: 1px solid $color-border;
 
   &:hover {
-    border: 1px solid rgba(blue, 0.5);
+    border: 1px solid rgba($color-primary, 0.5);
   }
 
   &.-active {
-    border: 1px solid blue;
+    border: 1px solid $color-primary;
+    box-shadow: 0 0 2rem rgba(black, 0.1);
+    transform: scale(1.01);
     z-index: 100;
   }
 
-  > .ui-field {
-    padding: 1rem;
-    flex: 1 0;
+  > .ui-content {
+    padding: 0 1rem;
+    flex: 1;
   }
 
   > .ui-editor {
     position: absolute;
-    top: 100%;
-    right: 0;
-    width: 50%;
+    right: 0.5rem;
+    top: 0.5rem;
+    border: 1px solid $color-border;
+    border-radius: 3px;
+    box-shadow: 0 0 1rem rgba(black, 0.05);
   }
 }
 

@@ -1,0 +1,15 @@
+button:not([class]), .ui-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: transparent;
+  border: none;
+  background: #367DFF;
+  line-height: 1;
+  padding: 1rem 2rem;
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  border-radius: 2px;
+  cursor: pointer;
+}

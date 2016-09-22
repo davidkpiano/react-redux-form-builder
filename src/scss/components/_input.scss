@@ -2,9 +2,10 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  min-width: 6rem;
   appearance: none;
   background: white;
-  border: 1px solid #AAA;
+  border: 2px solid $color-border;
   border-radius: 2px;
   font-size: 1rem;
   height: auto;
@@ -12,21 +13,30 @@
   padding: 0 0.5rem;
   margin-bottom: 0.5rem;
   overflow: hidden;
+  @include transition(border);
 
-  &:focus {
-    border-color: blue;
+  &:focus:not([readonly]) {
+    border-color: $color-primary;
   }
 
   &.-implicit {
-    border: none;
-    border-bottom: 1px solid transparent;
+    border-width: 0;
+    border-bottom-width: 2px;
     border-radius: 0;
     padding: 0;
 
+    + * {
+      margin-left: 1ch;
+    }
+
     &:hover,
     &:focus {
-      border-bottom: 1px solid blue;
+      border-bottom-color: $color-primary;
     }
+  }
+
+  &.-block {
+    width: 100%;
   }
 
   &.-large {
@@ -73,9 +83,12 @@ select {
   }
 
   &.-button {
+    appearance: none;
+    background: transparent;
     cursor: pointer;
     opacity: 0.5;
     border: 1px dashed #AAA;
+    font-size: 1rem;
 
     &:hover {
       opacity: 1;

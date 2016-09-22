@@ -1,0 +1,20 @@
+.ui-field {
+  margin: 1rem 0;
+  flex: 1 0;
+}
+
+.ui-add-field {
+  appearance: none;
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: 1px dashed $color-border;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+
+  &:hover {
+    border-style: solid;
+  }
+}

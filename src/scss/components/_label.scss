@@ -1,8 +1,10 @@
 label, .ui-label {
   display: block;
-  font-size: 1rem;
+  font-size: 0.8rem;
   line-height: 1.4rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  font-weight: 700;
 
   &.-inline {
     display: inline-block;

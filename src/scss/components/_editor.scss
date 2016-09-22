@@ -1,16 +1,12 @@
 .ui-editor {
-  background: #333333;
   padding: 1rem;
   pointer-events: none;
   opacity: 0;
+  background: white;
 
   &.-active {
     pointer-events: auto;
     animation: editor-enter 0.3s ease-in-out both;
-  }
-
-  .ui-label {
-    color: white;
   }
 }
 

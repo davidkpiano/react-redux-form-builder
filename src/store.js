@@ -14,7 +14,7 @@ const createControl = () => ({
 const createField = () => ({
   id: uniqueId(),
   type: 'radio',
-  model: 'user.name',
+  model: 'name',
   label: '',
   controls: [createControl()],
 });

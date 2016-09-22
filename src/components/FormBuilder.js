@@ -29,12 +29,20 @@ const createControl = () => ({
 const createField = () => ({
   id: uniqueId(),
   type: 'text',
-  model: 'user.name',
+  model: 'name',
   label: '',
   controls: [createControl()],
 });
 
 class FormBuilder extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      currentField: props.form.currentField,
+      editingField: props.form.currentField,
+    }
+  }
   handleAddField() {
     const { dispatch } = this.props;
 
@@ -53,7 +61,7 @@ class FormBuilder extends React.Component {
             {field.controls.map((control, i) =>
               <div className="ui-toggle" key={i}>
                 <Control.radio
-                  model=".defaultValue"
+                  model=".initialValue"
                   value={control.value}
                   tabIndex={-1}
                 />
@@ -69,14 +77,14 @@ class FormBuilder extends React.Component {
                 />
               </div>
             )}
-            <div
+            <button
               className="ui-toggle -button"
               onClick={() =>
                 dispatch(actions.push(track(
                   `form.fields[].controls`, {id: field.id}), createControl()))}>
               <input type="radio"/>
-              <strong>Add Radio Button</strong>
-            </div>
+              <span className="ui-subtext">Add Radio Button</span>
+            </button>
           </Form>
         );
       case 'checkbox':
@@ -85,7 +93,7 @@ class FormBuilder extends React.Component {
             {field.controls.map((control, i) =>
               <div className="ui-toggle" key={i}>
                 <Control.checkbox
-                  model={track(`form.fields[].defaultValue`, {id: field.id})}
+                  model={track(`form.fields[].initialValue`, {id: field.id})}
                   value={control.value}
                   tabIndex={-1}
                 />
@@ -117,24 +125,25 @@ class FormBuilder extends React.Component {
 
         return (
           <div className="ui-field">
-            <Control.text className="ui-input" placeholder="Default Value"
-              model={track('form.fields[].defaultValue', {id: field.id})}/>
+            <Control.text
+              className="ui-input"
+              readOnly
+              placeholder="Default Value"
+              model={track('form.fields[].initialValue', {id: field.id})}
+            />
           </div>
         );
     }
   }
   render() {
-    const { form, form: { fields, currentField }, dispatch } = this.props;
-
-    const editingField = currentField
-      ? fields.filter((field) => field.id === currentField)[0]
-      : null;
+    const { form, form: { fields }, dispatch } = this.props;
+    const { currentField, editingField } = this.state;
 
     return (
       <section className="ui-form-builder">
         <div model="form" className="ui-form">
           <div className="ui-row">
-            <div className="ui-field">
+            <div className="ui-content">
               <div className="ui-input -implicit -large">
                 <span className="ui-subtext">Form for{'\u00a0'}</span>
                 <Control.text
@@ -148,23 +157,24 @@ class FormBuilder extends React.Component {
           {fields.map((field) =>
             <div
               className={cn('ui-row', {'-active': field.id === currentField})}
-              onClick={() => dispatch(actions.change('form.currentField', field.id))}
+              onClick={() => this.setState({currentField: field.id, editingField: field.id})}
               key={field.id}
             >
-              <div
-                className="ui-field"
-              >
-                <Control.text
-                  model={track('form.fields[].label', {id: field.id})}
-                  placeholder="Add Label"
-                  className="ui-input -implicit"
-                />
+              <div className="ui-content">
+                <div className="ui-field">
+                  <Control.text
+                    model={track('form.fields[].label', {id: field.id})}
+                    placeholder="Add Label"
+                    className="ui-input -implicit"
+                  />
+                </div>
                 {(() => this.renderField(field))()}
               </div>
-              <EditField field={field} form={form} />
+              <EditField field={field} form={form} open={editingField === field.id} />
             </div>
           )}
           <button
+            className="ui-add-field"
             type="button"
             onClick={() => this.handleAddField()}
           >
@@ -174,9 +184,7 @@ class FormBuilder extends React.Component {
         <div className="ui-code">
           <pre>          
             <PrismCode className="language-jsx">
-              {snippet('form', form, fields.map((field) =>
-                snippet('field', field))
-              )}
+              {snippet('form', form)}
             </PrismCode>
           </pre>
         </div>
